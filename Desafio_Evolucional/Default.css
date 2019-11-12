@@ -1,0 +1,9 @@
+﻿ul{
+    list-style: none;
+}
+li{
+    margin: 10px;
+}
+li * {
+    margin: 5px;
+}

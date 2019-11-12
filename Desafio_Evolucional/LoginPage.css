@@ -1,0 +1,7 @@
+﻿html, body {
+    height: 100%;
+}
+#form1 > div {
+    height: 100%;
+    margin: 0 0;
+}
