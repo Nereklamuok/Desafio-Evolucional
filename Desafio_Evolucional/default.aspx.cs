@@ -58,11 +58,11 @@ namespace Desafio_Evolucional
 
                         if(nome_disciplina == listaDisciplinas.Last())
                         {
-                            sql_query += nome_disciplina + "DECIMAL(4,2))";
+                            sql_query += nome_disciplina + " DECIMAL(4,2))";
                         }
                         else
                         {
-                            sql_query += nome_disciplina + "DECIMAL(4,2),";
+                            sql_query += nome_disciplina + " DECIMAL(4,2),";
                         }
                     }
 
@@ -253,17 +253,24 @@ namespace Desafio_Evolucional
                     //Estabelece o tipo de conteúdo a ser enviado pela resposta. No caso, uma tabela Excel
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     //Gera o cabeçalho HTTP da resposta
-                    Response.AppendHeader("content-disposition", "attachment; filename=Alunos");
+                    Response.AppendHeader("content-disposition", "attachment; filename=Alunos.xlsx");
                     //Envia o arquivo "Alunos.xlsx" que se encontra no diretório local
                     Response.TransmitFile(AppDomain.CurrentDomain.BaseDirectory + "Alunos.xlsx");
                     //Finaliza a request
-                    Context.ApplicationInstance.CompleteRequest();
+                    Response.End();
+                    //Context.ApplicationInstance.CompleteRequest();
                 }
                 //Caso ocorra algum erro na transferência do arquivo, avisamos o usuário
                 catch (Exception ex)
                 {
-                    Response.Write("<script>alert('Erro na transferência do arquivo!');</script>");
-                    System.Diagnostics.Debug.WriteLine("Exception ocurred: " + ex.Message);
+                    if (!(ex is System.Threading.ThreadAbortException))
+                    {
+                        //Como o Response.End finaliza a Thread, o output da exceção estava sendo anexada ao arquivo transmitido, causando erros.
+                        //Então, só levantamos uma exceção caso seja diferente da de Thread Abort Exception
+                        //Seria importante mais a frente achar uma alternativa a isso
+                        Response.Write("<script>alert('Erro na transferência do arquivo!');</script>");
+                        System.Diagnostics.Debug.WriteLine("Exception ocurred: " + ex.Message);
+                    }
                 }
             }
             //Caso não exista o arquivo, então ele ainda tem de ser gerado. Portanto, enviamos um alerta para o usuário.
